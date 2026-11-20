@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a1527">
-<title>동작 인식 피아노(AI Motion Piano)</title>
-<meta name="description" content="AI 손동작 인식 피아노. 2026-10-24 백업 반영 13곡의 기본 플레이리스트 및 최대 200음 악보. 곡 선택·연주·악보 등록·녹음 지원.">
+<title>매직 핑거 피아노(Magic Finger Piano)</title>
+<!-- v9.11: 앱 설치(PWA) 지원 — 설치한 앱은 주소창 없이 실행된다. -->
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="매직 핑거 피아노">
+<meta name="description" content="매직 핑거 피아노 — AI 손동작 인식 피아노. 2026-10-24 백업 반영 13곡의 기본 플레이리스트 및 최대 200음 악보. 곡 선택·연주·악보 등록·녹음 지원.">
 <style>
 :root{font-family:Pretendard,'Noto Sans KR',system-ui,-apple-system,'Segoe UI',sans-serif;color:#f1f7ff;background:#071426;color-scheme:dark;--aqua:#6de1ff;--white-gap:clamp(4px,.44vw,8px)}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,select,input{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.6}.hidden{display:none!important}.ar-app{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;isolation:isolate;min-height:390px;background:radial-gradient(circle at 50% 35%,#264967,#071426 75%)}.camera-video,.camera-overlay,.camera-dimmer,.camera-placeholder{position:absolute;inset:0;width:100%;height:100%}.camera-video{z-index:0;object-fit:cover;transform:scaleX(-1)}.camera-overlay{z-index:3;pointer-events:none}.camera-dimmer{z-index:1;pointer-events:none;background:linear-gradient(to bottom,#03101cb0,transparent 38%,#06132615 60%,#061324dd)}.camera-placeholder{z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;text-align:center;background:linear-gradient(140deg,#182c45,#081528);padding-bottom:100px;font-size:16px}.camera-placeholder .big-emoji{font-size:48px}.camera-placeholder small{color:#aed0e2}.keyboard-shell{position:absolute;z-index:8;left:50%;top:8px;transform:translateX(-50%);width:min(1480px,calc(100% - 24px))}.keyboard-meta{display:flex;justify-content:space-between;align-items:center;padding:0 9px 6px;gap:8px;font-size:12px;letter-spacing:.08em;font-weight:800;text-shadow:0 2px 12px #000}.keyboard-meta #keyPlayed{text-align:right;font-weight:500;letter-spacing:0;max-width:30vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.keyboard-box{border:1px solid #aacfe399;border-radius:13px;background:#071b30bb;padding:9px 8px 12px;backdrop-filter:blur(7px);box-shadow:0 15px 40px #0008}.keyboard{height:clamp(220px,35vh,345px);position:relative;touch-action:none;user-select:none}.white-keys{display:flex;width:100%;height:100%;gap:var(--white-gap)}.piano-key{position:relative;border:0;touch-action:none;user-select:none;-webkit-user-select:none}.white-key{width:0;flex:1 1 0;background:linear-gradient(#f9fcffed,#dce6efea);border:1px solid #8aa6bd;border-bottom:7px solid #9eaebec7;border-radius:0 0 8px 8px;box-shadow:inset 2px 0 #fff7}.white-key.pressed{background:linear-gradient(#7eecfbd8,#76b2f9e0);border-bottom-color:#6da7cf}.black-key{position:absolute;z-index:3;top:0;width:4.5%;height:43%;border:2px solid #101829;border-radius:0 0 7px 7px;background:linear-gradient(105deg,#344257,#111a2b);box-shadow:2px 4px 9px #000b,0 0 0 1px #a6c9e455}.black-key.pressed{background:linear-gradient(#59d9ef,#326bbb)}.key-label{position:absolute;bottom:12px;left:0;right:0;color:#22364c;font-size:clamp(12px,1.6vw,22px);font-weight:900;text-align:center;pointer-events:none}.keyboard.hide-labels .key-label{display:none}.hand-cursors{position:absolute;inset:0;pointer-events:none;z-index:14}.finger-dot{position:absolute;width:25px;height:25px;border-radius:50%;transform:translate(-50%,-50%);border:3px solid #bbf7ff;background:#51c6ec50;box-shadow:0 0 0 7px #58c8ff45,0 0 18px #16d7f7}.finger-dot.closed{border-color:#ffe3a3;background:#f9c55875;box-shadow:0 0 0 8px #ffc84b30,0 0 25px #eccc66}.finger-dot.on-key{outline:2px solid #3dfccc;outline-offset:10px}.hud{position:absolute;z-index:7;top:calc(clamp(220px,35vh,345px) + 46px);left:50%;transform:translateX(-50%);width:min(900px,calc(100% - 30px));display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;text-align:center;text-shadow:0 2px 14px #020814}.hud-heading{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap}.hud-heading h1{font-size:clamp(18px,2.1vw,28px);margin:0;letter-spacing:-.5px}.hud-heading>span{font-size:12px;border-radius:7px;padding:5px 9px;background:#0a2942c9}.hud-heading #highScore{color:#ffe398}.view{display:flex;flex-direction:column;align-items:center;gap:9px;width:100%}.small-caption{font-size:13px}.practice-target{font-size:clamp(50px,9vh,97px);font-weight:900;color:#87dfff;line-height:1.15}.progress{width:min(600px,100%);height:8px;background:#7d9eae55;border-radius:99px;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#63d8ff,#9883fe);border-radius:inherit;transition:width .2s}.track-info{display:flex;gap:10px;justify-content:center;align-items:center;color:#e6f3ff;font-size:12px}.black-hint{background:#2c2a50e0;color:#ffe698;border-radius:7px;padding:4px 9px}.note-ribbon{width:100%;display:flex;gap:6px;overflow:auto;scrollbar-width:none;padding:5px 2px;justify-content:center}.note-ribbon::-webkit-scrollbar{display:none}.note-chip{background:#122e49d9;border:1px solid #91c3eb88;border-radius:11px;min-width:clamp(36px,4.7vw,54px);height:clamp(42px,6.5vh,62px);display:grid;place-items:center;font-size:clamp(13px,1.7vw,22px);font-weight:900}.note-chip.done{background:#1b6859cc;color:#baffdb}.note-chip.current{background:linear-gradient(125deg,#37b4eb,#6554d4);border:2px solid #eff8ff;box-shadow:0 0 17px #67baff80}.song-stats{width:min(650px,100%);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;font-weight:800}.rec-indicator{color:#ffbac0}.free-view{padding:14px 0;font-weight:700}.free-timer{display:flex;align-items:center;gap:10px;border-radius:12px;background:#081a31cb;border:1px solid #9bdafa7a;padding:10px 18px}.free-timer b{font-size:26px;font-variant-numeric:tabular-nums}.free-timer small{font-size:11px}#recordDot{width:11px;height:11px;background:#8096a8;border-radius:50%}#recordDot.recording{background:#ff6775;box-shadow:0 0 0 6px #ff68632b;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.4}}.feedback{max-width:100%;padding:8px 14px;border:1px solid #619fca8c;border-radius:50px;background:#081a2ce0;font-size:clamp(11px,1.3vw,15px);font-weight:700;backdrop-filter:blur(6px)}.feedback.success{color:#a7ffd6;border-color:#69ba96}.feedback.error{color:#ffd4ce;border-color:#df908c}.status-row{position:absolute;bottom:89px;right:15px;z-index:25;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}.status-chip{font-size:11px;font-weight:700;padding:8px 11px;border-radius:99px;background:#071b30da;color:#abffda;border:1px solid #5ea98e}.status-chip.warn{color:#ffe6aa;border-color:#b98e47}.toolbar{position:absolute;bottom:10px;left:10px;right:10px;height:68px;z-index:31;display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;white-space:nowrap;background:#0b182ded;border:1px solid #a2cce77d;border-radius:17px;padding:8px;backdrop-filter:blur(16px);box-shadow:0 13px 48px #000a}.toolbar::-webkit-scrollbar{display:none}.toolbar-groups,.context-actions{display:flex;align-items:center;gap:6px;flex:none}.group-btn,.tool-btn{flex:none;min-height:44px;padding:9px 12px;color:#e7f5ff;font-size:13px;font-weight:800;border:1px solid #60738a;border-radius:11px;background:#20304c}.group-btn.active{background:linear-gradient(115deg,#258cca,#6857b8);border-color:#b3d5ff}.tool-btn.primary{background:linear-gradient(115deg,#3a84db,#765ce9);border-color:#9ab2ff}.tool-btn.green{background:linear-gradient(100deg,#14747b,#1b918f);border-color:#78dbce}.record-enabled{color:#ffd4db;border-color:#b55d77;background:#593547}.record-disabled{color:#b5c4d8;background:#1c273b}.tool-separator{height:31px;width:1px;background:#8297b465;flex:none;margin:0 2px}.settings{position:absolute;right:14px;bottom:88px;z-index:45;width:min(310px,calc(100% - 28px));background:#0c223bee;border:1px solid #9dbed777;border-radius:15px;padding:17px;box-shadow:0 15px 35px #000b;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(15px)}.settings header{display:flex;justify-content:space-between}.settings header button{color:white;background:transparent;border:0;font-size:19px}.settings label{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#e7f4ff;font-size:12px}.settings select{background:#1d3858;border:1px solid #6b86a2;border-radius:8px;padding:6px;color:white;max-width:190px}.settings label:has(input[type=range]){flex-wrap:wrap}.settings input[type=range]{flex:1;width:100%;accent-color:#75d6ff}.settings .check{justify-content:flex-start}.settings .check input{accent-color:#71c7fb}.settings-song{display:flex;flex-direction:column;gap:12px}.settings>p{margin:0;font-size:11px;color:#a1bbd4}.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:#020713bc;backdrop-filter:blur(10px);padding:20px}.modal-inner{position:relative;width:min(750px,100%);max-height:89vh;overflow:auto;background:linear-gradient(145deg,#223753,#0f2038);border:1px solid #7d9fc599;border-radius:21px;box-shadow:0 25px 70px #000b;padding:27px}.modal-x{position:absolute;right:14px;top:12px;font-size:19px;color:#e8f1ff;background:transparent;border:0;z-index:1}.modal h2{font-size:26px;margin:0 28px 6px 0}.modal p{line-height:1.7;color:#bcd2e6;font-size:13px}.playlist-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}.playlist-card{display:flex;flex-direction:column;align-items:stretch;gap:5px;background:#1a3553d9;border:1px solid #567494;border-radius:14px;padding:15px;text-align:left;color:white;min-height:126px}.playlist-card:hover,.playlist-card:focus-visible{border-color:#95d8ff;background:#234872}.playlist-card strong{font-size:19px}.playlist-card small{font-size:12px;color:#b9cce1;line-height:1.5}.playlist-card .song-range{font-size:11px;color:#ffdca1}.modal-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:18px 0 0}.modal-button{padding:11px 15px;border:1px solid #6a86aa;color:white;border-radius:11px;background:#2d4a72;font-weight:750}.modal-button.primary{background:linear-gradient(110deg,#388ed7,#7465d6)}.score-num{font-weight:900;text-align:center;font-size:clamp(54px,8vw,87px);color:#ffe08e}.score-title{text-align:center;font-size:24px;font-weight:900}.score-stars{text-align:center;font-size:27px;margin:12px}.field{display:flex;flex-direction:column;gap:6px;margin:16px 0}.field input{width:100%;background:#0b1d33;border:1px solid #6682a0;color:white;border-radius:10px;padding:13px}.recordings{display:flex;flex-direction:column;gap:8px;margin:15px 0}.recording-row{display:flex;align-items:center;gap:11px;background:#182d49;padding:11px;border-radius:11px;border:1px solid #486582}.recording-row .record-details{flex:1;min-width:0}.recording-row small{display:block;color:#abc3d9;margin-top:3px}.recording-row .modal-button{padding:7px;font-size:11px}.qr-box{display:grid;place-items:center;gap:9px;margin:18px 0}.qr-holder{background:white;padding:12px;border-radius:10px;min-height:230px;min-width:230px;display:grid;place-items:center}.toast{position:fixed;z-index:120;bottom:95px;left:50%;transform:translateX(-50%);background:#264a68;color:white;border:1px solid #82c4eb;border-radius:10px;padding:12px 18px;font-weight:700;box-shadow:0 10px 35px #000b;max-width:calc(100vw - 24px);text-align:center}@media(max-width:760px){:root{--white-gap:clamp(2px,.48vw,5px)}.keyboard-shell{width:calc(100% - 12px);top:5px}.keyboard-box{padding:5px 4px 8px}.keyboard{height:clamp(169px,29vh,265px)}.hud{top:calc(clamp(169px,29vh,265px) + 43px);width:calc(100% - 16px)}.hud-heading{gap:5px}.hud-heading h1{font-size:17px}.hud-heading>span{font-size:10px;padding:4px 6px}.note-ribbon{justify-content:flex-start}.note-chip{min-width:39px;font-size:14px}.song-stats{font-size:11px}.status-row{right:7px;bottom:81px}.toolbar{height:62px;left:5px;right:5px;bottom:7px}.tool-btn,.group-btn{min-height:42px;padding:8px 9px;font-size:12px}.key-label{font-size:11px}.playlist-grid{grid-template-columns:1fr}.playlist-card{min-height:104px}.modal-inner{padding:23px 14px}.keyboard-meta #keyPlayed{display:none}}@media(max-height:530px){.keyboard{height:clamp(110px,26vh,150px)}.hud{top:calc(clamp(110px,26vh,150px) + 35px);gap:4px}.practice-target{font-size:45px}.note-chip{height:38px}.status-row{bottom:72px}.toolbar{height:57px}.feedback{padding:5px 11px}}
 /* Camera startup hint stays below the note-scoring HUD instead of obscuring it. */
@@ -1138,9 +1146,9 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
 
   <section class="keyboard-shell" aria-label="가상 피아노 23개 건반">
     <div class="keyboard-meta">
-      <div class="keyboard-app-title" role="heading" aria-level="1" aria-label="손 끝으로 연주하는 동작 인식 피아노">
+      <div class="keyboard-app-title" role="heading" aria-level="1" aria-label="손 끝으로 연주하는 매직 핑거 피아노">
         <span class="keyboard-app-tagline">손 끝으로 연주하는</span>
-        <strong class="keyboard-app-name">동작 인식 피아노</strong>
+        <strong class="keyboard-app-name">매직 핑거 피아노</strong>
       </div>
       <div class="keyboard-navigation" aria-label="건반 보기 및 이동">
         <span id="keyPlayed" class="key-played">손을 건반으로 이동하세요</span>
@@ -1291,10 +1299,10 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
 <div id="handCursors" class="hand-cursors" aria-hidden="true"></div>
 <div id="toast" class="toast hidden" role="status"></div>
 <!-- v9.10 체험부스 대기 화면: 처음 실행할 때와 일정 시간 사용이 없을 때 표시. 터치·클릭·키 입력 또는 손을 1초 보이면 시작. -->
-<section id="attract" class="attract" role="dialog" aria-modal="true" aria-label="동작 인식 피아노 대기 화면. 화면을 터치하거나 손을 보이면 시작합니다.">
+<section id="attract" class="attract" role="dialog" aria-modal="true" aria-label="매직 핑거 피아노 대기 화면. 화면을 터치하거나 손을 보이면 시작합니다.">
   <div class="attract-floaters" aria-hidden="true"><span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span><span>♫</span></div>
   <div class="attract-chip">🎹 AI 체험 부스 · 누구나 해 볼 수 있어요</div>
-  <h2 class="attract-title"><span class="tag">손 끝으로 연주하는</span><span class="name">동작 인식 피아노</span></h2>
+  <h2 class="attract-title"><span class="tag">손 끝으로 연주하는</span><span class="name">매직 핑거 피아노</span></h2>
   <p class="attract-sub">카메라 앞에서 <b>손가락을 모으면</b> 피아노 소리가 나요!</p>
   <div class="attract-demo" aria-hidden="true">
     <div class="attract-keys" id="attractKeys"><span id="attractFinger" class="attract-finger">🤏</span></div>
@@ -1988,7 +1996,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
     }
     const content=JSON.stringify({format:'ai-motion-piano-song-catalog',...payload},null,2);
     const blob=new Blob([content],{type:'application/json;charset=utf-8'});
-    downloadBlob(blob,'AI_Motion_Piano_곡목록_백업_'+new Date().toISOString().slice(0,10)+'.json');
+    downloadBlob(blob,'매직핑거피아노_곡목록_백업_'+new Date().toISOString().slice(0,10)+'.json');
     toast('곡 목록 백업 파일을 저장했습니다.');
   }
   function exportCurrentPlaylistHtml(){
@@ -2029,7 +2037,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
       lines[idx]='window.PIANO_DEFAULT_CATALOG='+safe+';';
       sourceScript.textContent=lines.join('\n');
       const html='<!doctype html>\n'+doc.outerHTML;
-      downloadBlob(new Blob([html],{type:'text/html;charset=utf-8'}),'AI_Motion_Piano_현재목록_기본내장.html');
+      downloadBlob(new Blob([html],{type:'text/html;charset=utf-8'}),'매직핑거피아노_현재목록_기본내장.html');
       toast('현재 곡 목록을 기본 제공 목록에 포함한 HTML 파일을 다운로드했습니다.');
     }catch(err){toast('HTML 생성 실패: '+(err?.message||err));}
   }
@@ -2058,7 +2066,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
     try{
       const all=await getTracks();
       const payload={format:COMPLETE_BACKUP_FORMAT,version:1,exportedAt:new Date().toISOString(),catalog:sanitizedBackupCatalog(),recordings:all};
-      downloadBlob(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}),'AI_Motion_Piano_전체백업_'+new Date().toISOString().slice(0,10)+'.json');
+      downloadBlob(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}),'매직핑거피아노_전체백업_'+new Date().toISOString().slice(0,10)+'.json');
       toast(`곡 목록과 녹음 ${all.length}개를 백업했습니다.`);
     }catch(err){toast('전체 백업 실패: '+err.message);}
   }
@@ -2083,7 +2091,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
     try{
       if(file.size>BACKUP_MAX_BYTES)throw Error('전체 백업 파일은 8MB 이하만 지원합니다.');
       const payload=JSON.parse(await file.text());
-      if(payload.format!==COMPLETE_BACKUP_FORMAT||payload.version!==1)throw Error('지원하는 AI Motion Piano 전체 백업 파일이 아닙니다.');
+      if(payload.format!==COMPLETE_BACKUP_FORMAT||payload.version!==1)throw Error('지원하는 매직 핑거 피아노(AI Motion Piano) 전체 백업 파일이 아닙니다.');
       const restored=cleanStoredCatalog(payload.catalog);
       if(!Array.isArray(payload.recordings)||payload.recordings.length>1000)throw Error('녹음 데이터가 올바르지 않습니다.');
       const imported=payload.recordings.map(validateTrack);
@@ -2149,7 +2157,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
       try{
         if(f.size>350000)throw Error('백업 파일은 350KB 이하여야 합니다.');
         const parsed=JSON.parse(await f.text());
-        if(parsed.format!=='ai-motion-piano-song-catalog')throw Error('AI Motion Piano 곡 목록 백업 파일이 아닙니다.');
+        if(parsed.format!=='ai-motion-piano-song-catalog')throw Error('매직 핑거 피아노(AI Motion Piano) 곡 목록 백업 파일이 아닙니다.');
         const incoming=cleanStoredCatalog(parsed);
         if(!confirm('백업을 가져오면 현재 곡 목록 수정·추가·삭제 내용이 교체됩니다. 기존 내용을 백업하셨나요?'))return;
         commitCatalog(incoming);
@@ -2748,12 +2756,12 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
       nativeButton.onclick=()=>{
         const file=nativeButton.__readyFile;
         if(!file||!navigator.canShare({files:[file]}))return;
-        navigator.share({files:[file],title:take.title,text:'AI Motion Piano 녹음 파일'})
+        navigator.share({files:[file],title:take.title,text:'매직 핑거 피아노 녹음 파일'})
           .catch(error=>{if(error?.name!=='AbortError')toast('기기 공유 실패: '+error.message);});
       };
       wavBlob(take).then(blob=>{
         if(!nativeButton.isConnected)return;
-        const file=new File([blob],(take.title.replace(/[\/:*?"<>|]/g,'_')||'AI-Motion-Piano')+'.wav',{type:'audio/wav'});
+        const file=new File([blob],(take.title.replace(/[\/:*?"<>|]/g,'_')||'매직핑거피아노')+'.wav',{type:'audio/wav'});
         if(navigator.canShare({files:[file]})){
           nativeButton.__readyFile=file;nativeButton.disabled=false;
           nativeButton.textContent='📲 기기로 WAV 공유';
@@ -3390,7 +3398,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
   const booth=(()=>{
     let saved={};try{saved=JSON.parse(readStorage(BOOTH_KEY,'{}'))||{};}catch{}
     const idle=Number(saved.idle);
-    return {idle:BOOTH_IDLE_CHOICES.includes(idle)?idle:60,sound:saved.sound===true};
+    return {idle:BOOTH_IDLE_CHOICES.includes(idle)?idle:60,sound:saved.sound!==false}; // 데모 소리는 기본으로 켬
   })();
   const saveBooth=()=>writeStorage(BOOTH_KEY,JSON.stringify(booth));
   const ATTRACT_HAND_HOLD_MS=1100;   // 손을 이만큼 계속 보이면 시작
@@ -3432,8 +3440,19 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
     bubble.textContent=demoNames.get(note)||'♯';box.appendChild(bubble);
     setTimeout(()=>{ripple.remove();bubble.remove();},1200);
     // 소리는 설정에서 켠 경우에만, 그리고 브라우저가 이미 소리를 허용한 뒤에만 낸다.
-    if(booth.sound&&audio.ctx?.state==='running'){try{audio.press(note,DEMO_VOICE);}catch{}}
+    if(booth.sound)playDemoSound(note);
     demoReleaseTimer=setTimeout(demoRelease,Math.max(120,holdMs));
+  }
+  // 데모 연주는 실제 피아노 음원으로, 체험자 연주보다 조금 작게(세기 0.6) 낸다.
+  // 브라우저 정책상 페이지에서 첫 터치·클릭·키 입력이 있기 전에는 소리를 낼 수 없으므로
+  // 그 전에는 화면만 움직이고, 한 번 허용된 뒤로는 대기 화면이 다시 뜰 때마다 소리가 난다.
+  function playDemoSound(note){
+    const ctx=audio.ctx;
+    if(!ctx||ctx.state!=='running'||!audio.master)return;
+    try{
+      audio.release(DEMO_VOICE);
+      audio.voices.set(DEMO_VOICE,audio.voice(ctx,audio.master,note,ctx.currentTime,.6));
+    }catch(e){console.warn('데모 소리 재생 실패',e);}
   }
   function demoTick(){
     if(!attractVisible)return;
@@ -3473,6 +3492,15 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
     $('attractSongTitle').textContent=DEMO_SONGS[0].title;
     demoTimer=setTimeout(demoTick,600);
   }
+  // 별도 창(index.html의 '별도 창에서 실행') 또는 설치한 앱으로 실행했을 때는
+  // 대기 화면을 닫는 첫 터치·클릭·키 입력에서 바로 전체 화면으로 전환한다.
+  // (브라우저는 사람의 입력 없이 전체 화면을 켜는 것을 허용하지 않는다. 손동작으로 시작한 경우는 제외)
+  const launchedAsBoothWindow=()=>window.name==='aiMotionPianoApp'||
+    !!window.matchMedia?.('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
+  function enterBoothFullscreen(){
+    if(!launchedAsBoothWindow()||document.fullscreenElement||!document.fullscreenEnabled)return;
+    try{document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(()=>{});}catch{}
+  }
   function hideAttract(){
     if(!attractVisible)return;
     attractVisible=false;clearTimeout(demoTimer);demoRelease();
@@ -3505,7 +3533,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
   },1000);
   const markBoothActivity=()=>{lastBoothActivity=performance.now();};
   for(const type of ['pointerdown','pointermove','wheel','touchstart'])window.addEventListener(type,markBoothActivity,{capture:true,passive:true});
-  $('attract').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();hideAttract();});
+  $('attract').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();enterBoothFullscreen();hideAttract();});
   window.addEventListener('keydown',e=>{
     markBoothActivity();
     if(!attractVisible)return;
@@ -3513,6 +3541,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
     if(/^F\d+$/.test(e.key))return;
     e.preventDefault();e.stopImmediatePropagation();
     audio.ensure().catch(()=>{}); // 이 키 입력을 브라우저 소리 허용에도 사용
+    enterBoothFullscreen();
     hideAttract();
   },{capture:true});
   $('boothIdle').value=String(booth.idle);
@@ -3527,7 +3556,7 @@ window.PIANO_DEFAULT_CATALOG={"version":1,"changed":{},"added":{"custom-e2b5801f
   if(dataStartupWarning)requestAnimationFrame(()=>toast(dataStartupWarning));
   // The recovery dialog appears only if a previous unsaved note-event take exists.
   requestAnimationFrame(()=>{void offerRecordingRecovery();});
-  console.info('AI Motion Piano v9.10 (booth attract screen) ready: protected playlists, committed recordings, recovery and backups.');
+  console.info('Magic Finger Piano v9.11 (booth: attract screen, auto fullscreen, demo sound) ready: protected playlists, committed recordings, recovery and backups.');
 })();
 </script>
 </body>

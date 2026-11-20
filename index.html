@@ -4,8 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071426">
-  <title>동작 인식 피아노(AI Motion Piano) | 실행</title>
-  <meta name="description" content="손 끝으로 연주하는 동작 인식 피아노 실행 화면. 새 창 또는 현재 창에서 연주할 수 있습니다.">
+  <title>매직 핑거 피아노(Magic Finger Piano) | 실행</title>
+  <meta name="description" content="손 끝으로 연주하는 매직 핑거 피아노 실행 화면. 새 창 또는 현재 창에서 연주할 수 있습니다.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="매직 핑거 피아노">
   <style>
     :root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#eaf6ff;background:#071426;color-scheme:dark}
     *{box-sizing:border-box}
@@ -21,6 +26,8 @@
     button:hover,button:focus-visible{filter:brightness(1.12)}
     .secondary{border:1px solid #5c86a9;background:#1a3856;font-size:15px;min-height:49px}
     .secondary:hover,.secondary:focus-visible{background:#2a5075}
+    #installApp{border-color:#9ff0d0;background:linear-gradient(115deg,#13a37c,#2e9bd9);box-shadow:0 8px 30px #13a37c55}
+    #installApp[hidden]{display:none}
     #status{min-height:24px;font-size:13px;color:#ffe4ac;margin:16px auto 0;line-height:1.5}
     .tip{border-top:1px solid #7390a35c;margin-top:20px;padding-top:17px;font-size:12px;color:#b3cee0;line-height:1.75;text-align:left}
     .tip strong{color:#e7f5ff}
@@ -30,16 +37,17 @@
 </head>
 <body>
   <main class="wrap">
-    <div class="eyebrow">🎹 손 끝으로 연주하는</div>
-    <h1>동작 인식 피아노</h1>
+    <div class="eyebrow">✨ 손 끝으로 연주하는</div>
+    <h1>매직 핑거 피아노</h1>
     <p>손동작으로 피아노를 연주하고, 나만의 연주를 녹음해 QR코드로 공유하세요.</p>
-    <p class="sub">AI Motion Piano · 카메라 사용을 허용하면 동작 인식이 시작됩니다.</p>
+    <p class="sub">Magic Finger Piano · 카메라 사용을 허용하면 손동작 인식이 시작됩니다.</p>
     <div class="action">
-      <button id="openWindow" type="button">↗ 별도 창에서 피아노 실행</button>
+      <button id="openWindow" type="button">↗ 별도 창에서 피아노 실행 (전체 화면)</button>
+      <button id="installApp" type="button" hidden>⬇ 앱으로 설치 · 주소창 없이 실행</button>
       <a class="secondary" href="./piano.html">현재 화면에서 실행</a>
     </div>
     <p id="status" role="status" aria-live="polite"></p>
-    <div class="tip"><strong>태블릿 안내:</strong> 기기에 따라 별도 창 대신 새 탭으로 열릴 수 있습니다. 일반 팝업으로는 브라우저 주소창을 완전히 숨길 수 없으므로, 전체 화면이 필요하다면 Safari의 ‘홈 화면에 추가 → 웹앱으로 열기’ 방식이 더 적합합니다.<br><strong>팝업 차단 시:</strong> 브라우저에서 이 사이트의 팝업을 허용하거나 ‘현재 화면에서 실행’을 선택하세요.</div>
+    <div class="tip"><strong>전체 화면 안내:</strong> ‘별도 창에서 실행’을 누르면 화면 크기에 맞춘 창이 열리고, 대기 화면을 처음 터치(클릭)하는 순간 주소창 없는 전체 화면으로 바뀝니다. 브라우저 보안 정책상 사람의 입력 없이 전체 화면을 켤 수는 없습니다.<br><strong>처음부터 주소창 없이:</strong> 크롬·엣지에서 ‘앱으로 설치’ 후 바탕화면·시작 메뉴의 ‘매직 핑거 피아노’ 아이콘으로 실행하세요. 태블릿은 Safari의 ‘홈 화면에 추가’를 이용하세요.<br><strong>팝업 차단 시:</strong> 브라우저에서 이 사이트의 팝업을 허용하거나 ‘현재 화면에서 실행’을 선택하세요.</div>
   </main>
   <script>
   (()=>{
@@ -49,10 +57,12 @@
     button.addEventListener('click',()=>{
       // Browsers allow a new browsing context most reliably inside a direct click.
       // This requests a popup; the browser ultimately decides window vs. tab and chrome.
-      const width=Math.min(1440,Math.max(320,screen.availWidth||1280));
-      const height=Math.min(950,Math.max(390,screen.availHeight||800));
-      const left=Math.max(0,Math.round(((screen.availWidth||width)-width)/2));
-      const top=Math.max(0,Math.round(((screen.availHeight||height)-height)/2));
+      // 체험부스용: 창을 화면 전체 크기로 연다. 실제 전체 화면(주소창 숨김)은
+      // piano.html의 대기 화면을 처음 터치할 때 켜진다(브라우저 정책상 사용자 입력 필요).
+      const width=Math.max(320,screen.availWidth||1280);
+      const height=Math.max(390,screen.availHeight||800);
+      const left=Math.max(0,screen.availLeft||0);
+      const top=Math.max(0,screen.availTop||0);
       const features=`popup=yes,width=${Math.round(width)},height=${Math.round(height)},left=${left},top=${top},resizable=yes,scrollbars=yes`;
       const url=new URL('./piano.html',location.href).href;
       let child=null;
@@ -63,8 +73,21 @@
         return;
       }
       try { child.opener=null; child.focus(); }catch{}
-      status.textContent='피아노를 새 창 또는 새 탭으로 열었습니다. 열리지 않았다면 브라우저의 팝업 차단 알림을 확인해 주세요.';
+      status.textContent='피아노를 새 창으로 열었습니다. 새 창의 대기 화면을 한 번 터치(클릭)하면 전체 화면으로 바뀝니다.';
     });
+    // 크롬·엣지에서 설치 가능할 때만 '앱으로 설치' 버튼을 보여 준다.
+    // 설치한 앱은 주소창 없는 창으로 바로 piano.html을 실행한다.
+    let installPrompt=null;
+    const installBtn=document.getElementById('installApp');
+    window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;installBtn.hidden=false;});
+    installBtn.addEventListener('click',async()=>{
+      if(!installPrompt)return;
+      installPrompt.prompt();
+      const choice=await installPrompt.userChoice.catch(()=>null);
+      installPrompt=null;installBtn.hidden=true;
+      status.textContent=choice?.outcome==='accepted'?'설치되었습니다. 바탕화면 또는 시작 메뉴의 ‘매직 핑거 피아노’ 아이콘으로 실행하세요.':'설치를 취소했습니다. 브라우저 주소창 오른쪽의 설치 아이콘으로도 설치할 수 있습니다.';
+    });
+    window.addEventListener('appinstalled',()=>{installBtn.hidden=true;});
   })();
   </script>
 </body>
